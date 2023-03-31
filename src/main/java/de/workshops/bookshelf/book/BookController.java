@@ -1,34 +1,21 @@
 package de.workshops.bookshelf.book;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import jakarta.annotation.PostConstruct;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
-
-import java.io.File;
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.List;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
 @RequestMapping("/")
+@RequiredArgsConstructor
 public class BookController {
 
-    @Autowired
-    private ObjectMapper mapper;
-
-    private List<Book> books;
-
-    @PostConstruct
-    public void init() throws IOException {
-        this.books = Arrays.asList(mapper.readValue(new File("target/classes/books.json"), Book[].class));
-    }
+    private final BookService bookService;
 
     @GetMapping
     public String getAllBooks(Model model) {
-        model.addAttribute("books", books);
+        model.addAttribute("books", bookService.getBooks());
 
         return "books";
     }
