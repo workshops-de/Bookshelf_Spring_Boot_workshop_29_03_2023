@@ -23,6 +23,7 @@ import static org.hamcrest.Matchers.hasSize;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @WebMvcTest(
+        controllers = BookRestController.class,
         includeFilters = @ComponentScan.Filter(
                 type = FilterType.ANNOTATION,
                 classes = Repository.class

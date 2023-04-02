@@ -41,8 +41,8 @@ class BookRestControllerBddIntegrationTest {
                 given().
                     log().all().
                 when().
-                    get("/book")
-                    .as(Book[].class);
+                    get("/book").
+                    as(Book[].class);
 
         assertEquals(3, books.length);
         assertEquals("Clean Code", books[1].getTitle());
