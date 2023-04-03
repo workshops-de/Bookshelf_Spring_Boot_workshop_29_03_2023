@@ -1,7 +1,8 @@
 package de.workshops.bookshelf.book;
 
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -23,7 +24,18 @@ public class BookRestController {
     private final BookService bookService;
 
     @GetMapping
-    public List<Book> getAllBooks() throws BookException {
+    public List<Book> getAllBooks(
+            @Parameter(
+                    name = "author",
+                    in = ParameterIn.QUERY,
+                    description = "Author name as search parameter"
+            )
+            @RequestParam(required = false) @Size(min = 3) String author
+    ) throws BookException {
+        if (author != null) {
+            return bookService.searchBooksByAuthor(author);
+        }
+
         List<Book> bookList = bookService.getBooks();
         if (bookList == null) {
             throw new BookException();
@@ -35,11 +47,6 @@ public class BookRestController {
     @GetMapping("/{isbn}")
     public Book getSingleBook(@PathVariable @Size(min = 10, max = 14) String isbn) throws BookException {
         return bookService.getSingleBook(isbn);
-    }
-
-    @GetMapping(params = "author")
-    public Book searchBookByAuthor(@RequestParam @NotBlank @Size(min = 3) String author) throws BookException {
-        return bookService.searchBookByAuthor(author);
     }
 
     @PostMapping("/search")

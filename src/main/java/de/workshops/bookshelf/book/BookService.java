@@ -23,8 +23,14 @@ public class BookService {
         return getBooks().stream().filter(book -> hasIsbn(book, isbn)).findFirst().orElseThrow(BookException::new);
     }
 
-    public Book searchBookByAuthor(String author) throws BookException {
-        return getBooks().stream().filter(book -> hasAuthor(book, author)).findFirst().orElseThrow(BookException::new);
+    public List<Book> searchBooksByAuthor(String author) throws BookException {
+        List<Book> bookList = getBooks().stream().filter(book -> hasAuthor(book, author)).toList();
+
+        if (bookList.isEmpty()) {
+            throw new BookException();
+        }
+
+        return bookList;
     }
 
     public List<Book> searchBooks(BookSearchRequest request) {

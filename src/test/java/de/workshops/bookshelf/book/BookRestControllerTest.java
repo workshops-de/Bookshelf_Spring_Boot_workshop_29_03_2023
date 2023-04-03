@@ -16,6 +16,6 @@ class BookRestControllerTest {
 
     @Test
     void getAllBooks() throws BookException {
-        assertEquals(3, Objects.requireNonNull(bookRestController.getAllBooks()).size());
+        assertEquals(3, Objects.requireNonNull(bookRestController.getAllBooks(null)).size());
     }
 }
