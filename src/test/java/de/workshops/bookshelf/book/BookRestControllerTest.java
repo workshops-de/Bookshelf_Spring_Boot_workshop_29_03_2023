@@ -11,11 +11,15 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @SpringBootTest
 class BookRestControllerTest {
 
+    private final BookRestController bookRestController;
+
     @Autowired
-    private BookRestController bookRestController;
+    BookRestControllerTest(BookRestController bookRestController) {
+        this.bookRestController = bookRestController;
+    }
 
     @Test
     void getAllBooks() throws BookException {
-        assertEquals(3, Objects.requireNonNull(bookRestController.getAllBooks(null)).size());
+        assertEquals(3, Objects.requireNonNull(bookRestController.getAllBooks()).size());
     }
 }

@@ -6,13 +6,9 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.FilterType;
-import org.springframework.context.annotation.Import;
-import org.springframework.stereotype.Repository;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -26,14 +22,7 @@ import static org.hamcrest.Matchers.hasSize;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@WebMvcTest(
-        controllers = BookRestController.class,
-        includeFilters = @ComponentScan.Filter(
-                type = FilterType.ANNOTATION,
-                classes = Repository.class
-        )
-)
-@Import(BookService.class)
+@SpringBootTest
 @AutoConfigureMockMvc
 class BookRestControllerIntegrationTest {
 
@@ -66,9 +55,9 @@ class BookRestControllerIntegrationTest {
         MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.get("/book"))
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("$", hasSize(3)))
                 .andExpect(MockMvcResultMatchers.jsonPath("$").isArray())
                 .andExpect(MockMvcResultMatchers.jsonPath("$").isNotEmpty())
+                .andExpect(MockMvcResultMatchers.jsonPath("$", hasSize(3)))
                 .andExpect(MockMvcResultMatchers.jsonPath("$[1].title").value("Clean Code"))
                 .andReturn();
         String jsonPayload = mvcResult.getResponse().getContentAsString();
@@ -79,5 +68,23 @@ class BookRestControllerIntegrationTest {
 
         assertThat(bookList).hasSize(3);
         assertThat(bookList.get(1).getTitle()).isEqualTo("Clean Code");
+    }
+
+    @Test
+    void filterBooks() throws Exception {
+        MvcResult mvcResult = mockMvc
+                .perform(
+                        MockMvcRequestBuilders
+                                .get("/book/filter")
+                                .queryParam("author", "Erich")
+                )
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$").isArray())
+                .andExpect(MockMvcResultMatchers.jsonPath("$").isNotEmpty())
+                .andExpect(MockMvcResultMatchers.jsonPath("$", hasSize(1)))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].title").value("Design Patterns"))
+                .andReturn();
+        String jsonPayload = mvcResult.getResponse().getContentAsString();
     }
 }

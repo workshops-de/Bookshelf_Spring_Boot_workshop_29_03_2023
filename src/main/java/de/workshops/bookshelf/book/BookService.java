@@ -16,7 +16,7 @@ public class BookService {
     }
 
     public List<Book> getBooks() {
-        return bookRepository.getBooks();
+        return bookRepository.findAllBooks();
     }
 
     public Book getSingleBook(String isbn) throws BookException {
