@@ -4,13 +4,12 @@ spring:
     driver-class-name: org.h2.Driver
   jpa:
     hibernate:
-      # Re-generating the DDL upon each application start to account for data model changes.
-      ddl-auto: create-drop
-    # By default, Spring Boot will try to populate the database from data.sql on startup,
-    # i.e. before JPA has the opportunity to generate DDL statements from classes annotated with @Entity.
-    defer-datasource-initialization: true
+      ddl-auto: validate
   # The default value is 'embedded', which only works for in-memory databases.
   # Since we're using a 'non-embedded' database here, we now need to set this to 'always'.
   sql:
     init:
       mode: always
+  h2:
+    console:
+      enabled: true

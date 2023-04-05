@@ -19,4 +19,9 @@ public class BookController {
 
         return "books";
     }
+
+    @GetMapping("/success")
+    public String redirectToSuccessUrl(Model model) {
+        return getAllBooks(model);
+    }
 }

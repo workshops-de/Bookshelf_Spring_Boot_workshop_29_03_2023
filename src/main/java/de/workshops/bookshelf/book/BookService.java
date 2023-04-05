@@ -16,7 +16,7 @@ public class BookService {
     }
 
     public List<Book> getBooks() {
-        return bookRepository.findAllBooks();
+        return bookRepository.findAll();
     }
 
     public Book getSingleBook(String isbn) throws BookException {
@@ -49,6 +49,10 @@ public class BookService {
     }
 
     public Book createBook(Book book) {
-        return book;
+        return bookRepository.save(book);
+    }
+
+    public void deleteBook(Book book)  {
+        bookRepository.delete(book);
     }
 }

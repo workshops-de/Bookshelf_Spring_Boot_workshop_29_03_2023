@@ -9,6 +9,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -49,6 +50,7 @@ class BookRestControllerIntegrationTest {
     }
 
     @Test
+    @WithMockUser
     void getAllBooks() throws Exception {
         assertTrue(objectMapper.getSerializationConfig().isEnabled(SerializationFeature.INDENT_OUTPUT));
 
@@ -71,8 +73,9 @@ class BookRestControllerIntegrationTest {
     }
 
     @Test
+    @WithMockUser(username = "dbUser", password = "workshops", roles = "USER")
     void filterBooks() throws Exception {
-        MvcResult mvcResult = mockMvc
+        mockMvc
                 .perform(
                         MockMvcRequestBuilders
                                 .get("/book/filter")
@@ -85,6 +88,5 @@ class BookRestControllerIntegrationTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$", hasSize(1)))
                 .andExpect(MockMvcResultMatchers.jsonPath("$[0].title").value("Design Patterns"))
                 .andReturn();
-        String jsonPayload = mvcResult.getResponse().getContentAsString();
     }
 }
